@@ -70,7 +70,7 @@
 
         <div class="mt-8 pt-6 border-t border-dark-700/50 text-center">
           <p class="text-dark-400 text-sm">
-            Demo Accounts: <span class="text-dark-200">admin@ems.com / Admin@123</span>
+            Demo Accounts: <span class="text-dark-200">admin@ems.com / admin123</span>
           </p>
         </div>
       </div>
