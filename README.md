@@ -46,6 +46,9 @@ docker-compose up --build
 ```
 The frontend will be available at `https://localhost:8444`.
 
+> [!TIP]
+> **SSL Warning**: If your browser shows a "Your connection is not private" error, you need to trust the generated certificate. Refer to the `ems-frontend.crt` file or type `thisisunsafe` on the error page in Chrome.
+
 ### Manual Development
 1. Install dependencies:
 ```bash
@@ -58,13 +61,8 @@ npm run dev
 
 ---
 
-## 📂 Project Structure
-
-- `src/components/ui`: High-performance reusable components.
-- `src/views`: Main page layouts (Dashboard, Employees, Departments).
-- `src/stores`: Pinia state management.
-- `src/api`: Axios-based service layer.
-- `nginx/`: Production SSL and proxy configuration.
+## 📂 API Reference
+- **cURL API Reference**: [api_reference.md](.gemini/antigravity/brain/d97e21f8-91c0-4d36-8f2f-850f987e488c/api_reference.md)
 
 ---
 
