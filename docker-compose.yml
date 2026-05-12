@@ -9,11 +9,13 @@ services:
     ports:
       - "8081:80"
       - "8444:443"
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl:ro
     environment:
-      - VITE_API_URL=http://localhost:8080
+      - VITE_API_URL=https://localhost:8443
     networks:
-      - ems-frontend-network
+      - ems-network
 
 networks:
-  ems-frontend-network:
-    driver: bridge
+  ems-network:
+    external: true
