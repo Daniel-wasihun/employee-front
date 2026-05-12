@@ -14,6 +14,9 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf.template
 # Install gettext for envsubst
 RUN apk add --no-cache gettext
 
+# Default backend host (Render fallback)
+ENV BACKEND_HOST=employee-back-wwa3.onrender.com
+
 # Ensure SSL directory exists
 RUN mkdir -p /etc/nginx/ssl
 
