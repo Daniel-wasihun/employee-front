@@ -18,21 +18,21 @@
     <div class="card overflow-hidden">
       <DataTable
         :columns="columns"
-        :data="employees"
-        :loading="loading"
+        :data="employeeStore.employees"
+        :loading="employeeStore.loading"
         searchable
-        :search-query="search"
-        @search="onSearch"
-        :page="page"
-        :size="size"
-        :total-elements="totalElements"
-        :total-pages="totalPages"
-        @page-change="goToPage"
+        :search-query="employeeStore.searchQuery"
+        @search="employeeStore.setSearch"
+        :page="employeeStore.page"
+        :size="employeeStore.size"
+        :total-elements="employeeStore.totalElements"
+        :total-pages="employeeStore.totalPages"
+        @page-change="employeeStore.setPage"
       >
         <template #cell-name="{ row }">
           <div class="flex items-center gap-3">
             <div class="w-9 h-9 rounded-xl bg-[var(--bg-input)] border border-[var(--border-subtle)] flex items-center justify-center text-xs font-bold text-[var(--text-main)] shadow-sm">
-              {{ row.firstName.charAt(0) }}{{ row.lastName.charAt(0) }}
+              {{ row.firstName?.charAt(0) }}{{ row.lastName?.charAt(0) }}
             </div>
             <div>
               <div class="font-semibold text-[var(--text-main)]">{{ row.firstName }} {{ row.lastName }}</div>
@@ -82,21 +82,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { employeesApi } from '@/api/employees'
+import { useEmployeeStore } from '@/stores/employee'
 import type { Employee } from '@/types'
 import { useAuth } from '@/composables/useAuth'
-import { usePagination } from '@/composables/usePagination'
 import { useToast } from 'vue-toastification'
 import DataTable from '@/components/ui/DataTable.vue'
 import BaseModal from '@/components/ui/BaseModal.vue'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
 import EmployeeForm from '@/components/employee/EmployeeForm.vue'
 
+const employeeStore = useEmployeeStore()
 const { isAdmin } = useAuth()
 const toast = useToast()
-
-const employees = ref<Employee[]>([])
-const search = ref('')
 
 const columns = [
   { key: 'name', label: 'Employee' },
@@ -105,22 +102,6 @@ const columns = [
   { key: 'salary', label: 'Salary' },
   { key: 'status', label: 'Status' },
 ]
-
-const { page, size, totalElements, totalPages, loading, updateFromResponse, goToPage } = usePagination(fetchEmployees)
-
-async function fetchEmployees() {
-  try {
-    const response = await employeesApi.getAll({
-      page: page.value,
-      size: size.value,
-      search: search.value,
-    })
-    employees.value = response.data.content
-    updateFromResponse(response.data)
-  } catch (err) {
-    toast.error('Failed to fetch employees')
-  }
-}
 
 // Modal & Form State
 const showModal = ref(false)
@@ -150,14 +131,11 @@ async function handleSubmit(data: Partial<Employee>) {
   submitting.value = true
   try {
     if (isEditing.value && data.id) {
-      await employeesApi.update(data.id, data)
-      toast.success('Employee updated successfully')
+      await employeeStore.updateEmployee(data.id, data)
     } else {
-      await employeesApi.create(data)
-      toast.success('Employee created successfully')
+      await employeeStore.createEmployee(data)
     }
     showModal.value = false
-    fetchEmployees()
   } catch (err: any) {
     toast.error(err.response?.data?.message || 'Action failed')
   } finally {
@@ -166,26 +144,20 @@ async function handleSubmit(data: Partial<Employee>) {
 }
 
 async function confirmDelete(emp: Employee) {
-  if (confirm(`Are you sure you want to delete ${emp.firstName} ${emp.lastName}?`)) {
+  if (confirm(`Archive ${emp.firstName} ${emp.lastName}?`)) {
     try {
-      await employeesApi.delete(emp.id)
-      toast.success('Employee deleted')
-      fetchEmployees()
+      await employeeStore.deleteEmployee(emp.id)
     } catch (err) {
-      toast.error('Failed to delete employee')
+      toast.error('Failed to archive employee')
     }
   }
-}
-
-function onSearch(query: string) {
-  search.value = query
-  page.value = 0
-  fetchEmployees()
 }
 
 const formatCurrency = (val: number) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val)
 }
 
-onMounted(fetchEmployees)
+onMounted(() => {
+  employeeStore.fetchEmployees()
+})
 </script>

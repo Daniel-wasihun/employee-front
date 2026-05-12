@@ -35,8 +35,8 @@
             </th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-[var(--border-subtle)] bg-[var(--bg-card)]">
-          <tr v-if="loading" class="animate-pulse">
+        <tbody class="divide-y divide-[var(--border-subtle)] bg-[var(--bg-card)] relative">
+          <tr v-if="loading && data.length === 0" class="animate-pulse">
             <td :colspan="columns.length + 1" class="px-6 py-12 text-center">
               <BaseSpinner />
             </td>
@@ -46,23 +46,26 @@
               No results found.
             </td>
           </tr>
-          <tr 
-            v-else 
-            v-for="row in data" 
-            :key="row.id" 
-            class="hover:bg-primary-500/5 transition-colors group"
-          >
-            <td v-for="col in columns" :key="col.key" class="px-6 py-4 whitespace-nowrap">
-              <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
-                <span class="text-sm font-medium text-[var(--text-main)]">{{ row[col.key] || '—' }}</span>
-              </slot>
-            </td>
-            <td class="px-6 py-4 text-right whitespace-nowrap">
-              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <slot name="actions_col" :row="row"></slot>
-              </div>
-            </td>
-          </tr>
+          <template v-else>
+            <transition-group name="list">
+              <tr 
+                v-for="row in data" 
+                :key="row.id" 
+                class="hover:bg-primary-500/5 transition-colors group"
+              >
+                <td v-for="col in columns" :key="col.key" class="px-6 py-4 whitespace-nowrap">
+                  <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
+                    <span class="text-sm font-medium text-[var(--text-main)]">{{ row[col.key] || '—' }}</span>
+                  </slot>
+                </td>
+                <td class="px-6 py-4 text-right whitespace-nowrap">
+                  <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <slot name="actions_col" :row="row"></slot>
+                  </div>
+                </td>
+              </tr>
+            </transition-group>
+          </template>
         </tbody>
       </table>
     </div>
