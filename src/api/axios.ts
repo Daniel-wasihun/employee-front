@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
 const api = axios.create({
-  baseURL: 'https://employee-back-wwa3.onrender.com/api/v1',
+  baseURL: `${import.meta.env.VITE_API_URL || ''}/api/v1`,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

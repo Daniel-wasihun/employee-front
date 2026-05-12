@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AuthResponse } from '@/types'
 
 const authAxios = axios.create({
-  baseURL: 'https://employee-back-wwa3.onrender.com/api/v1/auth',
+  baseURL: `${import.meta.env.VITE_API_URL || ''}/api/v1/auth`,
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
