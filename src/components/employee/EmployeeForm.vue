@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="$emit('submit')" class="space-y-10 animate-in">
+  <form @submit.prevent="$emit('submit', employee)" class="space-y-10 animate-in">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
       <!-- Personal Intelligence Section -->
       <div class="space-y-8">
@@ -47,7 +47,7 @@
                       {{ dept.name }}
                     </option>
                   </select>
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-[var(--text-dim)] group-hover:text-primary-500">
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-(--text-dim) group-hover:text-primary-500">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                   </div>
                 </div>
@@ -61,7 +61,7 @@
               <div>
                 <label class="label">Financial Allocation</label>
                 <div class="relative">
-                  <span class="absolute left-4 inset-y-0 flex items-center text-[var(--text-dim)] font-bold">$</span>
+                  <span class="absolute left-4 inset-y-0 flex items-center text-(--text-dim) font-bold">$</span>
                   <input v-model="employee.salary" type="number" step="0.01" required class="input pl-8" placeholder="0.00">
                 </div>
               </div>
@@ -72,7 +72,7 @@
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
                   </select>
-                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-[var(--text-dim)] group-hover:text-primary-500">
+                  <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-(--text-dim) group-hover:text-primary-500">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                   </div>
                 </div>
@@ -84,7 +84,7 @@
     </div>
 
     <!-- Actions -->
-    <div class="flex justify-end items-center gap-4 pt-10 border-t border-[var(--border-subtle)]">
+    <div class="flex justify-end items-center gap-4 pt-10 border-t border-(--border-subtle)">
       <button type="button" @click="$emit('cancel')" class="btn-secondary px-10">Discard</button>
       <button type="submit" class="btn-primary min-w-[200px] h-12" :disabled="loading">
         <template v-if="loading">
@@ -92,7 +92,7 @@
           <span class="ml-2">Processing...</span>
         </template>
         <template v-else>
-          <span>Commmit Personnel Record</span>
+          <span>{{ isEditing ? 'Save Changes' : 'Create Employee' }}</span>
         </template>
       </button>
     </div>
@@ -100,16 +100,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { departmentsApi } from '@/api/departments'
 import type { Employee, Department } from '@/types'
 
 const props = defineProps<{
   employee: Partial<Employee>
   loading?: boolean
+  isEditing?: boolean
 }>()
 
 defineEmits(['submit', 'cancel'])
+
+// Writable local copy — v-model inputs need a reactive ref, not a readonly prop
+const employee = ref<Partial<Employee>>({ ...props.employee })
+
+// Re-sync when parent swaps the employee (e.g. switching between create/edit modal)
+watch(() => props.employee, (newVal) => {
+  employee.value = { ...newVal }
+}, { deep: true })
 
 const departments = ref<Department[]>([])
 

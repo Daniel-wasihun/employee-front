@@ -7,12 +7,12 @@ services:
       dockerfile: Dockerfile
     container_name: ems-frontend
     ports:
-      - "8081:80"
       - "8444:443"
+      - "8080:80"
     volumes:
       - ./nginx/ssl:/etc/nginx/ssl:ro
     environment:
-      - VITE_API_URL=https://localhost:8443
+      - VITE_API_URL=https://ems-backend:8443
     networks:
       - ems-network
 

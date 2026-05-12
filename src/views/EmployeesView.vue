@@ -70,9 +70,9 @@
       size="lg"
     >
       <EmployeeForm
-        :form="form"
+        :employee="form"
         :loading="submitting"
-        :submit-label="isEditing ? 'Save Changes' : 'Create Employee'"
+        :is-editing="isEditing"
         @submit="handleSubmit"
         @cancel="showModal = false"
       />
@@ -146,14 +146,14 @@ function openEditModal(emp: Employee) {
   showModal.value = true
 }
 
-async function handleSubmit() {
+async function handleSubmit(data: Partial<Employee>) {
   submitting.value = true
   try {
-    if (isEditing.value && form.value.id) {
-      await employeesApi.update(form.value.id, form.value)
+    if (isEditing.value && data.id) {
+      await employeesApi.update(data.id, data)
       toast.success('Employee updated successfully')
     } else {
-      await employeesApi.create(form.value)
+      await employeesApi.create(data)
       toast.success('Employee created successfully')
     }
     showModal.value = false
