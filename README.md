@@ -44,7 +44,7 @@ cd employee-front
 # 2. Run with Docker Compose
 docker-compose up --build
 ```
-The frontend will be available at `https://localhost` (Port 443).
+The frontend will be available at `https://localhost:8444`.
 
 ### Manual Development
 1. Install dependencies:

@@ -7,7 +7,8 @@ services:
       dockerfile: Dockerfile
     container_name: ems-frontend
     ports:
-      - "80:80"
+      - "8081:80"
+      - "8444:443"
     environment:
       - VITE_API_URL=http://localhost:8080
     networks:
