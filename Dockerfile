@@ -23,5 +23,11 @@ RUN mkdir -p /etc/nginx/ssl
 EXPOSE 80
 EXPOSE 443
 
-# Use a shell script to inject env vars and start nginx
-CMD ["/bin/sh", "-c", "envsubst '${BACKEND_HOST}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+# Use a shell script to inject env vars, handle optional SSL, and start nginx
+CMD ["/bin/sh", "-c", "envsubst '${BACKEND_HOST}' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && \
+    if [ ! -f /etc/nginx/ssl/cert.pem ]; then \
+        echo 'SSL certificates not found. Disabling SSL in Nginx config...'; \
+        sed -i 's/listen 443 ssl;/listen 443;/g' /etc/nginx/conf.d/default.conf; \
+        sed -i 's/ssl_certificate/#ssl_certificate/g' /etc/nginx/conf.d/default.conf; \
+    fi && \
+    nginx -g 'daemon off;'"]
