@@ -42,7 +42,7 @@ git clone https://github.com/Daniel-wasihun/employee-front.git
 cd employee-front
 
 # 2. Run with Docker Compose
-docker compose up --build
+docker-compose up --build
 ```
 The frontend will be available at `https://localhost` (Port 443).
 
