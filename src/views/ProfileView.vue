@@ -1,78 +1,133 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-8 animate-in slide-up">
-    <div>
-      <h1 class="text-3xl font-extrabold text-[var(--text-main)] tracking-tight">Personal Profile</h1>
-      <p class="text-[var(--text-muted)] mt-1">Manage your professional information and settings</p>
-    </div>
-
-    <div v-if="loading" class="flex justify-center py-12">
-      <BaseSpinner size="lg" />
-    </div>
-
-    <div v-else-if="employee" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <!-- Left: Profile Card -->
-      <div class="md:col-span-1 space-y-6">
-        <div class="card p-8 flex flex-col items-center text-center">
-          <div class="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-2xl shadow-primary-500/30 flex items-center justify-center text-4xl font-bold text-white mb-6 transform hover:rotate-3 transition-transform">
-            {{ employee.firstName.charAt(0) }}{{ employee.lastName.charAt(0) }}
+  <div class="max-w-5xl mx-auto space-y-10 animate-in">
+    <!-- Profile Header Card -->
+    <div class="card overflow-hidden border-none shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)]">
+      <div class="h-48 bg-gradient-to-r from-primary-600 via-primary-500 to-sky-400 relative">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <div class="absolute -bottom-16 left-12">
+          <div class="w-32 h-32 rounded-[2.5rem] bg-[var(--bg-card)] p-2 shadow-2xl">
+            <div class="w-full h-full rounded-[2rem] bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-3xl font-black text-white shadow-inner">
+              {{ profile?.firstName[0] }}{{ profile?.lastName[0] }}
+            </div>
           </div>
-          <h2 class="text-2xl font-bold text-[var(--text-main)]">{{ employee.firstName }} {{ employee.lastName }}</h2>
-          <p class="text-primary-600 dark:text-primary-400 font-semibold tracking-wide uppercase text-xs mt-1">{{ employee.position }}</p>
-          
-          <div class="mt-6 flex flex-wrap justify-center gap-2">
-            <BaseBadge variant="primary">{{ role }}</BaseBadge>
-            <BaseBadge :variant="employee.status === 'ACTIVE' ? 'success' : 'danger'">{{ employee.status }}</BaseBadge>
+        </div>
+      </div>
+      
+      <div class="pt-20 pb-10 px-12 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 class="text-4xl font-black text-[var(--text-main)] tracking-tight">
+            {{ profile?.firstName }} {{ profile?.lastName }}
+          </h1>
+          <div class="flex items-center gap-3 mt-2">
+            <span class="px-3 py-1 rounded-lg bg-primary-500/10 text-primary-600 text-xs font-black uppercase tracking-widest border border-primary-500/20">
+              {{ profile?.position || 'Staff Member' }}
+            </span>
+            <span class="text-sm font-bold text-[var(--text-dim)]">•</span>
+            <span class="text-sm font-bold text-[var(--text-muted)]">{{ profile?.departmentName || 'Operations' }}</span>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="px-6 py-3 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-subtle)] text-center min-w-[120px]">
+            <p class="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Status</p>
+            <BaseBadge :variant="profile?.status === 'ACTIVE' ? 'success' : 'danger'">{{ profile?.status }}</BaseBadge>
+          </div>
+          <div class="px-6 py-3 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-subtle)] text-center min-w-[120px]">
+            <p class="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Identity</p>
+            <p class="text-sm font-black text-[var(--text-main)] uppercase tracking-tighter">ID-{{ profile?.id?.toString().padStart(4, '0') }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <!-- Personnel Data -->
+      <div class="lg:col-span-2 space-y-10">
+        <div class="card p-10">
+          <div class="flex items-center justify-between mb-10">
+            <h2 class="text-xl font-black text-[var(--text-main)] tracking-tight">Personnel Intelligence</h2>
+            <div class="w-10 h-10 rounded-xl bg-primary-500/10 flex items-center justify-center text-primary-600">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            <div class="space-y-2">
+              <label class="label">First Identification</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.firstName }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Last Identification</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.lastName }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Electronic Mail</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.email }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Contact Frequency</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.phone || 'Not Specified' }}</div>
+            </div>
           </div>
         </div>
 
-        <div class="card p-6 space-y-4">
-          <h4 class="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Contact Info</h4>
-          <div class="flex items-center gap-3 text-sm text-[var(--text-muted)]">
-            <svg class="w-4 h-4 text-[var(--text-dim)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-            {{ employee.email }}
+        <div class="card p-10">
+          <div class="flex items-center justify-between mb-10">
+            <h2 class="text-xl font-black text-[var(--text-main)] tracking-tight">Contractual Specification</h2>
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
           </div>
-          <div v-if="employee.phone" class="flex items-center gap-3 text-sm text-[var(--text-muted)]">
-            <svg class="w-4 h-4 text-[var(--text-dim)]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
-            {{ employee.phone }}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+            <div class="space-y-2">
+              <label class="label">Deployment Unit</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.departmentName }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Strategic Role</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.position }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Activation Date</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">{{ profile?.hireDate }}</div>
+            </div>
+            <div class="space-y-2">
+              <label class="label">Financial Tier</label>
+              <div class="input bg-[var(--bg-main)]/50 font-bold">${{ profile?.salary?.toLocaleString() }} / yr</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Right: Detailed Info -->
-      <div class="md:col-span-2 space-y-6">
-        <div class="card p-8">
-          <div class="flex items-center justify-between mb-8 pb-4 border-b border-[var(--border-subtle)]">
-            <h3 class="text-xl font-bold text-[var(--text-main)]">Employment Details</h3>
-            <div class="text-xs text-[var(--text-dim)] font-medium">Employee ID: #{{ employee.id }}</div>
-          </div>
+      <!-- Side Column -->
+      <div class="space-y-10">
+        <div class="card p-8 bg-slate-900 text-white border-none shadow-2xl">
+          <h3 class="text-lg font-black tracking-tight mb-6">System Security</h3>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Access Management</p>
           
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Department</span>
-              <p class="text-lg font-semibold text-[var(--text-main)]">{{ employee.departmentName || 'Not Assigned' }}</p>
+          <button class="w-full btn-primary bg-primary-600 hover:bg-primary-500 mb-4 h-12">
+            Reset Access Token
+          </button>
+          <button class="w-full btn-secondary bg-slate-800 border-slate-700 text-white hover:bg-slate-700 h-12">
+            View Activity Logs
+          </button>
+          
+          <div class="mt-8 pt-8 border-t border-slate-800">
+            <div class="flex items-center justify-between text-xs mb-2">
+              <span class="text-slate-500 font-bold uppercase">Security Level</span>
+              <span class="text-emerald-400 font-black">HIGH</span>
             </div>
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Join Date</span>
-              <p class="text-lg font-semibold text-[var(--text-main)]">{{ formatDate(employee.hireDate) }}</p>
-            </div>
-            <div v-if="employee.salary" class="space-y-1">
-              <span class="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Current Salary</span>
-              <p class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">{{ formatCurrency(employee.salary) }}</p>
-            </div>
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Account Created</span>
-              <p class="text-lg font-semibold text-[var(--text-main)]">{{ formatDate(employee.createdAt) }}</p>
+            <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-500 w-full rounded-full"></div>
             </div>
           </div>
         </div>
 
-        <!-- Security / Account Settings -->
-        <div class="card p-8">
-          <h3 class="text-xl font-bold text-[var(--text-main)] mb-6">Security Settings</h3>
-          <button @click="toast.info('Feature coming soon!')" class="btn-secondary w-full justify-start gap-4 h-12 px-6">
-            <svg class="w-5 h-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
-            Change Account Password
-          </button>
+        <div class="card p-8 bg-gradient-to-br from-primary-500/10 to-transparent">
+          <h3 class="text-sm font-black text-[var(--text-main)] uppercase tracking-widest mb-4">Organizational Node</h3>
+          <p class="text-xs text-[var(--text-muted)] leading-relaxed font-medium">
+            This personnel record is cryptographically linked to the <strong>{{ profile?.departmentName }}</strong> unit. Any modifications require administrative clearance.
+          </p>
         </div>
       </div>
     </div>
@@ -82,40 +137,19 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { employeesApi } from '@/api/employees'
-import { useAuth } from '@/composables/useAuth'
 import type { Employee } from '@/types'
-import { useToast } from 'vue-toastification'
-import BaseSpinner from '@/components/ui/BaseSpinner.vue'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
+import BaseSpinner from '@/components/ui/BaseSpinner.vue'
 
-const { role } = useAuth()
-const toast = useToast()
-const employee = ref<Employee | null>(null)
+const profile = ref<Employee | null>(null)
 const loading = ref(true)
 
-async function fetchMe() {
+onMounted(async () => {
   try {
     const response = await employeesApi.getMe()
-    employee.value = response.data
-  } catch (err) {
-    toast.error('Failed to load profile details')
+    profile.value = response.data
   } finally {
     loading.value = false
   }
-}
-
-const formatDate = (dateString?: string) => {
-  if (!dateString) return '—'
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
-
-const formatCurrency = (val: number) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val)
-}
-
-onMounted(fetchMe)
+})
 </script>
