@@ -4,7 +4,7 @@
       <!-- Personal Intelligence Section -->
       <div class="space-y-8">
         <div>
-          <h3 class="text-sm font-black text-primary-500 uppercase tracking-[0.2em] mb-6">Personal Intelligence</h3>
+          <h3 class="text-sm font-black text-primary-500 uppercase tracking-[0.2em] mb-6">Identity Information</h3>
             <div class="grid grid-cols-2 gap-6">
               <BaseInput
                 :model-value="employee.firstName || ''"
@@ -25,7 +25,7 @@
               :model-value="employee.email || ''"
               @update:model-value="employee.email = $event"
               type="email"
-              label="Professional Email"
+              label="Email Address"
               placeholder="a.sterling@organization.com"
               required
             />
@@ -33,7 +33,7 @@
               :model-value="employee.phone || ''"
               @update:model-value="employee.phone = $event"
               type="tel"
-              label="Contact Number"
+              label="Phone Number"
               placeholder="+1 (555) 000-0000"
             />
           </div>
@@ -42,22 +42,27 @@
       <!-- Professional Placement Section -->
       <div class="space-y-8">
         <div>
-          <h3 class="text-sm font-black text-primary-500 uppercase tracking-[0.2em] mb-6">Professional Placement</h3>
+          <h3 class="text-sm font-black text-primary-500 uppercase tracking-[0.2em] mb-6">Organizational Setup</h3>
           <div class="space-y-6">
-            <BaseInput
-              :model-value="employee.position || ''"
-              @update:model-value="employee.position = $event"
-              label="Strategic Role"
-              placeholder="e.g. Principal Architect"
+            <BaseSelect
+              v-model="employee.role"
+              label="Strategic Authorization"
               required
-            />
+              @update:model-value="onRoleChange"
+            >
+              <option :value="undefined" disabled>Select Authorization Level</option>
+              <option v-for="role in roles" :key="role.value" :value="role.value">
+                {{ role.label }}
+              </option>
+            </BaseSelect>
+
             <div class="grid grid-cols-2 gap-6">
               <BaseSelect
                 v-model="employee.departmentId"
-                label="Functional Unit"
+                label="Department"
                 required
               >
-                <option :value="undefined" disabled>Select Unit</option>
+                <option :value="undefined" disabled>Select Department</option>
                 <option v-for="dept in departments" :key="dept.id" :value="dept.id">
                   {{ dept.name }}
                 </option>
@@ -67,43 +72,34 @@
                 :model-value="employee.hireDate || ''"
                 @update:model-value="employee.hireDate = $event"
                 type="date"
-                label="Activation Date"
+                label="Hire Date"
                 required
               />
             </div>
+
             <div class="grid grid-cols-2 gap-6">
               <BaseInput
                 :model-value="employee.salary || 0"
                 @update:model-value="employee.salary = $event"
                 type="number"
-                label="Financial Allocation"
+                label="Salary"
                 placeholder="0.00"
                 required
               >
                 <template #icon-left>
-                  <span class="font-bold text-(--text-dim)">$</span>
+                  <span class="font-bold text-[var(--text-dim)]">$</span>
                 </template>
               </BaseInput>
 
               <BaseSelect
                 v-model="employee.status"
-                label="Status Tier"
+                label="Current Status"
                 required
               >
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="INACTIVE">INACTIVE</option>
               </BaseSelect>
             </div>
-
-            <BaseSelect
-              v-model="employee.role"
-              label="System Authorization"
-              required
-            >
-              <option v-for="role in USER_ROLES" :key="role.value" :value="role.value">
-                {{ role.label }}
-              </option>
-            </BaseSelect>
           </div>
         </div>
       </div>
@@ -129,8 +125,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { departmentsApi } from '@/api/departments'
+import { metadataApi } from '@/api/metadata'
 import type { Employee, Department } from '@/types'
-import { USER_ROLES } from '@/constants/roles'
 import BaseInput from '@/components/ui/BaseInput.vue'
 import BaseSelect from '@/components/ui/BaseSelect.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -155,13 +151,25 @@ watch(() => props.employee, (newVal) => {
 }, { deep: true })
 
 const departments = ref<Department[]>([])
+const roles = ref<{ value: string, label: string }[]>([])
+
+function onRoleChange(newRole: string) {
+  const roleObj = roles.value.find(r => r.value === newRole)
+  if (roleObj) {
+    employee.value.position = roleObj.label
+  }
+}
 
 onMounted(async () => {
   try {
-    const response = await departmentsApi.getAll()
-    departments.value = response.data
+    const [deptRes, roleRes] = await Promise.all([
+      departmentsApi.getAll(),
+      metadataApi.getRoles()
+    ])
+    departments.value = deptRes.data
+    roles.value = roleRes.data
   } catch (err) {
-    console.error('Failed to load departments', err)
+    console.error('Failed to load form metadata', err)
   }
 })
 </script>
