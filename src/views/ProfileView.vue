@@ -105,12 +105,12 @@
           <h3 class="text-lg font-black tracking-tight mb-6">System Security</h3>
           <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Access Management</p>
           
-          <button class="w-full btn-primary bg-primary-600 hover:bg-primary-500 mb-4 h-12">
+          <BaseButton block class="mb-4">
             Reset Access Token
-          </button>
-          <button class="w-full btn-secondary bg-slate-800 border-slate-700 text-white hover:bg-slate-700 h-12">
+          </BaseButton>
+          <BaseButton variant="secondary" block class="bg-slate-800! border-slate-700! text-white! hover:bg-slate-700!">
             View Activity Logs
-          </button>
+          </BaseButton>
           
           <div class="mt-8 pt-8 border-t border-slate-800">
             <div class="flex items-center justify-between text-xs mb-2">
@@ -140,6 +140,7 @@ import { employeesApi } from '@/api/employees'
 import type { Employee } from '@/types'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
 import BaseSpinner from '@/components/ui/BaseSpinner.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const profile = ref<Employee | null>(null)
 const loading = ref(true)

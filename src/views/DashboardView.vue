@@ -42,7 +42,9 @@
             <h3 class="text-xl font-black text-[var(--text-main)] tracking-tight">Recent Acquisitions</h3>
             <p class="text-xs font-bold text-[var(--text-dim)] uppercase tracking-widest mt-1">Latest talent onboarding</p>
           </div>
-          <router-link to="/employees" class="btn-secondary h-10 px-6">View Directory</router-link>
+          <BaseButton to="/employees" variant="secondary" size="sm">
+            View Directory
+          </BaseButton>
         </div>
         <div class="overflow-x-auto px-4 pb-4">
           <table class="w-full">
@@ -126,6 +128,7 @@ import { dashboardApi } from '@/api/dashboard'
 import type { DashboardStats } from '@/types'
 import BaseBadge from '@/components/ui/BaseBadge.vue'
 import BaseSpinner from '@/components/ui/BaseSpinner.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
 
 const stats = ref<DashboardStats | null>(null)
 const loading = ref(true)

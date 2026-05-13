@@ -2,19 +2,18 @@
   <div class="w-full flex flex-col transition-colors duration-300">
     <!-- Filters / Search -->
     <div v-if="searchable" class="p-4 md:p-6 border-b border-[var(--border-subtle)] bg-[var(--bg-card)]">
-      <div class="relative max-w-md">
-        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-          <svg class="h-5 h-5 text-[var(--text-dim)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </span>
-        <input
-          :value="searchQuery"
-          @input="onSearch"
-          type="text"
+      <div class="max-w-md">
+        <BaseInput
+          :model-value="searchQuery"
+          @update:model-value="$emit('search', $event)"
           placeholder="Search employees, positions..."
-          class="input pl-11 py-3"
-        />
+        >
+          <template #icon-left>
+            <svg class="h-5 w-5 text-[var(--text-dim)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </template>
+        </BaseInput>
       </div>
     </div>
 
@@ -78,21 +77,25 @@
         <span class="text-[var(--text-main)]">{{ totalElements }}</span> results
       </div>
       <div class="flex items-center gap-2">
-        <button 
+        <BaseButton 
+          variant="ghost"
+          size="sm"
           @click="$emit('page-change', page - 1)" 
           :disabled="page === 0"
-          class="p-2 rounded-xl border border-[var(--border-subtle)] text-[var(--text-muted)] hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          class="bg-white! dark:bg-slate-800! border! border-[var(--border-subtle)]! p-2!"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
-        </button>
+        </BaseButton>
         <span class="text-xs font-bold text-[var(--text-main)] px-3">Page {{ page + 1 }} of {{ totalPages }}</span>
-        <button 
+        <BaseButton 
+          variant="ghost"
+          size="sm"
           @click="$emit('page-change', page + 1)" 
           :disabled="page >= totalPages - 1"
-          class="p-2 rounded-xl border border-[var(--border-subtle)] text-[var(--text-muted)] hover:bg-white dark:hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          class="bg-white! dark:bg-slate-800! border! border-[var(--border-subtle)]! p-2!"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-        </button>
+        </BaseButton>
       </div>
     </div>
   </div>
@@ -100,6 +103,8 @@
 
 <script setup lang="ts">
 import BaseSpinner from './BaseSpinner.vue'
+import BaseInput from './BaseInput.vue'
+import BaseButton from './BaseButton.vue'
 
 interface Column {
   key: string
@@ -123,8 +128,4 @@ const emit = defineEmits<{
   (e: 'page-change', page: number): void
 }>()
 
-function onSearch(event: Event) {
-  const query = (event.target as HTMLInputElement).value
-  emit('search', query)
-}
 </script>

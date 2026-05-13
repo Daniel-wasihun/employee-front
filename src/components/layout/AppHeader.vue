@@ -46,15 +46,18 @@
         </button>
         
         <!-- Dropdown -->
-        <div class="absolute right-0 top-full mt-2 w-48 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-xl shadow-2xl py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50">
-          <router-link to="/profile" class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--text-main)] hover:bg-primary-500/10 hover:text-primary-600 transition-colors">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-            My Profile
+        <div class="absolute right-0 top-full mt-3 w-56 bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-strong)]/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-90 group-hover:scale-100 z-50 overflow-hidden">
+          <div class="px-4 py-2 border-b border-[var(--border-subtle)] mb-1 sm:hidden">
+            <p class="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Account</p>
+            <p class="text-xs font-bold text-[var(--text-main)] truncate">{{ userEmail }}</p>
+          </div>
+          <router-link to="/profile" class="flex items-center gap-3 px-4 py-3 text-sm text-[var(--text-main)] hover:bg-primary-500/10 hover:text-primary-600 transition-colors font-semibold">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            Personnel Profile
           </router-link>
-          <hr class="my-2 border-[var(--border-subtle)]">
-          <button @click="logout" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 transition-colors text-left font-medium">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
-            Sign Out
+          <button @click="logout" class="w-full flex items-center gap-3 px-4 py-3 text-sm text-rose-500 hover:bg-rose-500/10 transition-colors text-left font-bold">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+            Terminate Session
           </button>
         </div>
       </div>

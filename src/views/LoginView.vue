@@ -23,39 +23,45 @@
         <!-- Form -->
         <form @submit.prevent="handleLogin" class="space-y-8">
           <div class="space-y-6">
-            <div class="space-y-2">
-              <label class="label">Corporate Email</label>
-              <div class="relative group">
-                <div class="absolute left-4 inset-y-0 flex items-center text-[var(--text-dim)] group-focus-within:text-primary-500 transition-colors">
-                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
-                </div>
-                <input v-model="email" type="email" required class="input pl-12 h-14" placeholder="name@company.com">
-              </div>
-            </div>
+            <BaseInput
+              v-model="email"
+              id="email"
+              type="email"
+              label="Corporate Email"
+              placeholder="name@company.com"
+              required
+            >
+              <template #icon-left>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+              </template>
+            </BaseInput>
 
-            <div class="space-y-2">
-              <div class="flex justify-between items-end mb-1">
-                <label class="label mb-0">Access Credential</label>
+            <BaseInput
+              v-model="password"
+              id="password"
+              type="password"
+              label="Access Credential"
+              placeholder="••••••••"
+              required
+            >
+              <template #label-right>
                 <a href="#" class="text-[10px] font-black text-primary-500 uppercase tracking-widest hover:text-primary-400 transition-colors">Recovery?</a>
-              </div>
-              <div class="relative group">
-                <div class="absolute left-4 inset-y-0 flex items-center text-[var(--text-dim)] group-focus-within:text-primary-500 transition-colors">
-                  <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                </div>
-                <input v-model="password" type="password" required class="input pl-12 h-14" placeholder="••••••••">
-              </div>
-            </div>
+              </template>
+              <template #icon-left>
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+              </template>
+            </BaseInput>
           </div>
 
-          <button type="submit" class="w-full btn-primary h-14 text-base tracking-tight" :disabled="loading">
-            <template v-if="loading">
-              <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              <span class="ml-2">Authenticating...</span>
-            </template>
-            <template v-else>
-              <span>Authorize Access</span>
-            </template>
-          </button>
+          <BaseButton
+            type="submit"
+            size="lg"
+            block
+            :loading="loading"
+            loading-text="Authenticating..."
+          >
+            Authorize Access
+          </BaseButton>
         </form>
 
         <!-- Footer -->
@@ -80,6 +86,8 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useToast } from 'vue-toastification'
 import { useTheme } from '@/composables/useTheme'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseInput from '@/components/ui/BaseInput.vue'
 
 const router = useRouter()
 const { login } = useAuthStore()

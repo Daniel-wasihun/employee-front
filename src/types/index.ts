@@ -27,6 +27,7 @@ export interface Employee {
   salary?: number;
   hireDate?: string;
   status: 'ACTIVE' | 'INACTIVE';
+  role?: UserRole;
   createdAt?: string;
   updatedAt?: string;
 }
